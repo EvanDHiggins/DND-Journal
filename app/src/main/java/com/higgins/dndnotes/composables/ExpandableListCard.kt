@@ -2,10 +2,7 @@ package com.higgins.dndnotes.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,23 +12,35 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.higgins.dndnotes.R
 
+@ExperimentalMaterialApi
 @Composable
-fun ExpandableListCard(title: String) {
+fun ExpandableListCard(
+    title: String,
+    onClick: (() -> Unit)? = null,
+    onAdd: (() -> Unit)? = null,
+    onExpand: (() -> Unit)? = null,
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth(1f)
             .padding(horizontal = 24.dp, vertical = 8.dp),
         shape = RoundedCornerShape(14.dp),
-        elevation = 5.dp
+        elevation = 5.dp,
+        onClick = onClick ?: {},
+        enabled = onClick != null, // Disables click animation if no onClick is provided.
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth(1f)
         ) {
-            CardArrow(degrees = 0f, onClick = { })
-            Text(text = title, modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center)
-            NewEntryButton(title = title)
+            if (onExpand != null) {
+                CardArrow(degrees = 0f, onClick = onExpand)
+            }
+            Text(text = title, modifier = Modifier.padding(16.dp).fillMaxWidth(1f), textAlign = TextAlign.Center)
+            if (onAdd != null) {
+                NewEntryButton(title = title)
+            }
         }
     }
 }
