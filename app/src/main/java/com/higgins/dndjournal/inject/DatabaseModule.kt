@@ -23,4 +23,5 @@ class DatabaseModule {
 
     @Provides fun provideCampaignDao(db: DndJournalDatabase) = db.campaignDao()
     @Provides fun provideQuestDao(db: DndJournalDatabase) = db.questDao()
+    @Provides fun provideLocationDao(db: DndJournalDatabase) = db.locationDao()
 }
