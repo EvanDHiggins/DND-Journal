@@ -1,5 +1,6 @@
 package com.higgins.dndnotes.main
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,6 +24,7 @@ open class Route(val route: String) {
 
 data class NavigationState(val navController: NavController, val homeViewModel: HomeViewModel)
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun AppNavigation(navController: NavHostController, homeViewModel: HomeViewModel = hiltViewModel()) {
@@ -33,6 +35,7 @@ fun AppNavigation(navController: NavHostController, homeViewModel: HomeViewModel
     }
 }
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 fun NavGraphBuilder.addCampaignSelect(navState: NavigationState) {
     composable(Route.CampaignSelect.route) {
@@ -43,6 +46,7 @@ fun NavGraphBuilder.addCampaignSelect(navState: NavigationState) {
     }
 }
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 fun NavGraphBuilder.addCampaignJournal(navState: NavigationState) {
     composable(

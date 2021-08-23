@@ -1,5 +1,6 @@
 package com.higgins.dndnotes
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.painterResource
@@ -14,6 +15,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.higgins.dndnotes.main.HomeViewModel
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun Home(viewModel: HomeViewModel = hiltViewModel()) {

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.higgins.dndnotes.db.DndJournalDatabase
 import com.higgins.dndnotes.db.campaign.Campaign
+import com.higgins.dndnotes.db.quest.Quest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,6 +29,10 @@ class PrepopulateMockDataViewModel @Inject constructor(val db: DndJournalDatabas
         db.campaignDao().insertAll(Campaign("Other Campaign"))
         db.campaignDao().insertAll(Campaign("Secret Campaign"))
 
-        db.campaignDao().getByName("Matt's Campaign")
+        val campaign = db.campaignDao().getByName("Matt's Campaign")
+
+        db.questDao().insertAll(Quest(campaign.id, "Find the lost person"))
+        db.questDao().insertAll(Quest(campaign.id, "Kill some Draugr"))
+        db.questDao().insertAll(Quest(campaign.id, "Run a mile"))
     }
 }
