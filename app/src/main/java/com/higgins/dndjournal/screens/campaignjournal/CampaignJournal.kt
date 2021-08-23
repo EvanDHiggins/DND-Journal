@@ -50,10 +50,23 @@ fun CampaignJournal(
             )
         }
         item {
-            ExpandableJournalCategory("NPCs", onAdd = {})
+            val npcEntries by campaignJournalViewModel.observableNpcs(campaignId)
+                .collectAsState(listOf())
+            CategoryList(
+                journalType = JournalType.NPCS,
+                expandedJournals = expandedJournals,
+                entries = npcEntries.map { it.name }
+            )
         }
         item {
-            ExpandableJournalCategory("Tags", onAdd = {})
+            val tagEntries by campaignJournalViewModel.observableTags(campaignId).collectAsState(
+                listOf()
+            )
+            CategoryList(
+                journalType = JournalType.TAGS,
+                expandedJournals = expandedJournals,
+                entries = tagEntries.map { it.name }
+            )
         }
     }
 }

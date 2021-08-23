@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.higgins.dndjournal.db.DndJournalDatabase
 import com.higgins.dndjournal.db.campaign.Campaign
 import com.higgins.dndjournal.db.location.DndLocation
+import com.higgins.dndjournal.db.npcs.DndNpc
 import com.higgins.dndjournal.db.quest.Quest
+import com.higgins.dndjournal.db.tags.DndTag
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,7 +40,19 @@ class PrepopulateMockDataViewModel @Inject constructor(val db: DndJournalDatabas
             Quest(campaign.id, "Run a mile")
         )
 
-        db.locationDao()
-            .insertAll(DndLocation(campaign.id, "Mordor"), DndLocation(campaign.id, "Gondor"))
+        db.locationDao().insertAll(
+            DndLocation(campaign.id, "Mordor"),
+            DndLocation(campaign.id, "Gondor")
+        )
+
+        db.npcDao().insertAll(
+            DndNpc(campaign.id, "Dave"),
+            DndNpc(campaign.id, "Rudiger"),
+        )
+
+        db.tagDao().insertAll(
+            DndTag(campaign.id, "Treasure"),
+            DndTag(campaign.id, "Weapon")
+        )
     }
 }
