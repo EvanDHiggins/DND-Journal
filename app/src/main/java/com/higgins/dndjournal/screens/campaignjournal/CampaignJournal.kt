@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.higgins.dndjournal.screens.campaignjournal.CampaignJournalViewModel
+import com.higgins.dndjournal.screens.campaignjournal.JournalType
+
 
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
@@ -23,28 +25,29 @@ fun CampaignJournal(
     campaignId: Int,
     campaignJournalViewModel: CampaignJournalViewModel = hiltViewModel()
 ) {
-    val expandedCategories by campaignJournalViewModel.expandedCategories.observeAsState(setOf())
+    val expandedJournals by campaignJournalViewModel.expandedJournals.observeAsState(setOf())
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 0.dp, vertical = 12.dp)
             .fillMaxHeight(1f)
     ) {
         item {
-            //QuestsList(campaignId)
             val questEntries by campaignJournalViewModel.observableQuests(campaignId)
                 .collectAsState(listOf())
-
             CategoryList(
-                "Quests",
-                campaignId,
-                expandedCategories,
-                questEntries.map { it.name },
-                onExpandPressed = {
-                    campaignJournalViewModel.toggleCategorySelection(campaignId)
-                })
+                journalType = JournalType.QUESTS,
+                expandedJournals = expandedJournals,
+                entries = questEntries.map { it.name }
+            )
         }
         item {
-            ExpandableJournalCategory("Locations", onAdd = {})
+            val locationEntries by campaignJournalViewModel.observableLocations(campaignId)
+                .collectAsState(listOf())
+            CategoryList(
+                journalType = JournalType.LOCATIONS,
+                expandedJournals = expandedJournals,
+                entries = locationEntries.map { it.name }
+            )
         }
         item {
             ExpandableJournalCategory("NPCs", onAdd = {})
@@ -55,20 +58,39 @@ fun CampaignJournal(
     }
 }
 
+@ExperimentalMaterialApi
+@ExperimentalAnimationApi
+@Composable
+fun CategoryList(
+    journalType: JournalType,
+    expandedJournals: Set<JournalType>,
+    entries: List<String>,
+    campaignJournalViewModel: CampaignJournalViewModel = hiltViewModel()
+) {
+    CategoryList(
+        journalType.toString(),
+        journalType,
+        expandedJournals,
+        entries,
+        onExpandPressed = {
+            campaignJournalViewModel.toggleCategorySelection(journalType)
+        })
+}
+
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun CategoryList(
     title: String,
-    campaignId: Int,
-    expandedCategories: Set<Int>,
+    journalType: JournalType,
+    expandedJournals: Set<JournalType>,
     entries: List<String>,
     onExpandPressed: () -> Unit,
 ) {
     ExpandableJournalCategory(
         title,
         onAdd = {},
-        state = getJournalCategoryStateForCategory(campaignId, expandedCategories),
+        state = getJournalCategoryStateForCategory(journalType, expandedJournals),
         onExpandPressed = onExpandPressed,
     ) {
         Column {
@@ -81,10 +103,10 @@ fun CategoryList(
 }
 
 fun getJournalCategoryStateForCategory(
-    categoryId: Int,
-    expandedCategories: Set<Int>
+    journalType: JournalType,
+    expandedCategories: Set<JournalType>
 ): JournalCategoryState {
-    return if (expandedCategories.contains(categoryId)) {
+    return if (expandedCategories.contains(journalType)) {
         JournalCategoryState.EXPANDED
     } else {
         JournalCategoryState.COLLAPSED

@@ -5,17 +5,22 @@ import com.higgins.dndjournal.db.quest.QuestDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import androidx.lifecycle.MutableLiveData
+import com.higgins.dndjournal.db.location.DndLocationDao
 import com.higgins.dndjournal.util.toggle
 
 @HiltViewModel
-class CampaignJournalViewModel @Inject constructor(private val questDao: QuestDao) : ViewModel() {
+class CampaignJournalViewModel @Inject constructor(
+    private val questDao: QuestDao,
+    private val locationDao: DndLocationDao
+) : ViewModel() {
     fun observableQuests(campaignId: Int) = questDao.getQuestsForCampaign(campaignId)
+    fun observableLocations(campaignId: Int) = locationDao.getLocationsForCampaign(campaignId)
 
-    private val _expandedCategories = MutableLiveData<Set<Int>>(setOf())
-    val expandedCategories = _expandedCategories
+    private val _expandedJournals = MutableLiveData<Set<JournalType>>(setOf())
+    val expandedJournals = _expandedJournals
 
-    fun toggleCategorySelection(categoryName: Int) {
-        _expandedCategories.value = _expandedCategories.value?.toggle(categoryName) ?: throw
+    fun toggleCategorySelection(journalType: JournalType) {
+        _expandedJournals.value = _expandedJournals.value?.toggle(journalType) ?: throw
         RuntimeException(
             """Did not find existing set for CampaignNournalViewModel::expandedCategories.
                 | This should be initialized to an empty set and never null.""".trimMargin()
