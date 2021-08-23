@@ -20,14 +20,29 @@ import com.higgins.dndnotes.screens.campaignjournal.CampaignJournalViewModel
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
-fun CampaignJournal(campaignId: Int) {
+fun CampaignJournal(
+    campaignId: Int,
+    campaignJournalViewModel: CampaignJournalViewModel = hiltViewModel()
+) {
+    val expandedCategories by campaignJournalViewModel.expandedCategories.observeAsState(setOf())
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 0.dp, vertical = 12.dp)
             .fillMaxHeight(1f)
     ) {
         item {
-            QuestsList(campaignId)
+            //QuestsList(campaignId)
+            val questEntries by campaignJournalViewModel.observableQuests(campaignId)
+                .collectAsState(listOf())
+
+            CategoryList(
+                "Quests",
+                campaignId,
+                expandedCategories,
+                questEntries.map { it.name },
+                onExpandPressed = {
+                    campaignJournalViewModel.toggleCategorySelection(campaignId)
+                })
         }
         item {
             ExpandableJournalCategory("Locations", onAdd = {})
@@ -44,24 +59,23 @@ fun CampaignJournal(campaignId: Int) {
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
-fun QuestsList(
+fun CategoryList(
+    title: String,
     campaignId: Int,
-    campaignJournalViewModel: CampaignJournalViewModel = hiltViewModel()
+    expandedCategories: Set<Int>,
+    entries: List<String>,
+    onExpandPressed: () -> Unit,
 ) {
-    val expandedCategories by campaignJournalViewModel.expandedCategories.observeAsState(setOf())
-    val questEntries by campaignJournalViewModel.observableQuests(campaignId).collectAsState(listOf())
     ExpandableJournalCategory(
-        "Quests",
+        title,
         onAdd = {},
         state = getJournalCategoryStateForCategory(campaignId, expandedCategories),
-        onExpandPressed = {
-            campaignJournalViewModel.toggleCategorySelection(campaignId)
-        }
+        onExpandPressed = onExpandPressed,
     ) {
         Column {
-            for (entry in questEntries) {
+            for (entry in entries) {
                 // TODO: Add real list entry instead of a garbage placeholder.
-                Text(entry.name)
+                Text(entry)
             }
         }
     }
