@@ -8,13 +8,9 @@ import com.higgins.dndjournal.db.DndJournalDatabase
 import com.higgins.dndjournal.db.campaign.Campaign
 import com.higgins.dndjournal.db.journalentry.JournalEntry
 import com.higgins.dndjournal.db.journaltype.Journal
-import com.higgins.dndjournal.db.location.DndLocation
-import com.higgins.dndjournal.db.npcs.DndNpc
-import com.higgins.dndjournal.db.quest.Quest
 import com.higgins.dndjournal.db.tags.DndTag
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.lang.RuntimeException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -66,20 +62,14 @@ class PrepopulateMockDataViewModel @Inject constructor(val db: DndJournalDatabas
             JournalEntry(questJournal.id, "Run a mile", "This seems really hard...")
         )
 
-        db.questDao().insertAll(
-            Quest(campaign.id, "Find the lost person"),
-            Quest(campaign.id, "Kill some Draugr"),
-            Quest(campaign.id, "Run a mile")
+        db.journalEntryDao().insertAll(
+            JournalEntry(locationJournal.id, "Mordor", "Spooky..."),
+            JournalEntry(locationJournal.id,  "Gondor", "Cool")
         )
 
-        db.locationDao().insertAll(
-            DndLocation(campaign.id, "Mordor"),
-            DndLocation(campaign.id, "Gondor")
-        )
-
-        db.npcDao().insertAll(
-            DndNpc(campaign.id, "Dave"),
-            DndNpc(campaign.id, "Rudiger"),
+        db.journalEntryDao().insertAll(
+           JournalEntry(npcJournal.id, "Dave", "nice guy"),
+            JournalEntry(npcJournal.id, "Rudiger", "is a bird"),
         )
 
         db.tagDao().insertAll(

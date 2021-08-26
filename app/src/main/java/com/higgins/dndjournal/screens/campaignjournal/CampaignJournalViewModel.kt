@@ -1,32 +1,26 @@
 package com.higgins.dndjournal.screens.campaignjournal
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.higgins.dndjournal.db.quest.QuestDao
+import com.higgins.dndjournal.db.journalentry.JournalEntryDao
+import com.higgins.dndjournal.db.journaltype.JournalDao
+import com.higgins.dndjournal.util.toggle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import androidx.lifecycle.MutableLiveData
-import com.higgins.dndjournal.db.location.DndLocationDao
-import com.higgins.dndjournal.db.npcs.NpcDao
-import com.higgins.dndjournal.db.tags.TagDao
-import com.higgins.dndjournal.util.toggle
 
 @HiltViewModel
 class CampaignJournalViewModel @Inject constructor(
-    private val questDao: QuestDao,
-    private val locationDao: DndLocationDao,
-    private val npcDao: NpcDao,
-    private val tagDao: TagDao,
+    private val journalDao: JournalDao,
+    private val journalEntryDao: JournalEntryDao,
 ) : ViewModel() {
-    fun observableQuests(campaignId: Int) = questDao.getQuestsForCampaign(campaignId)
-    fun observableLocations(campaignId: Int) = locationDao.getLocationsForCampaign(campaignId)
-    fun observableNpcs(campaignId: Int) = npcDao.getNpcsForCampaign(campaignId)
-    fun observableTags(campaignId: Int) = tagDao.getTagsForCampaign(campaignId)
+    fun observableJournals(campaignId: Int) = journalDao.getJournalsForCampaign(campaignId)
+    fun entriesForJournal(journalId: Int) = journalEntryDao.getEntriesForJournal(journalId)
 
-    private val _expandedJournals = MutableLiveData<Set<JournalType>>(setOf())
-    val expandedJournals = _expandedJournals
+    private val _expandedJournalIds = MutableLiveData<Set<Int>>(setOf())
+    val expandedJournalIds = _expandedJournalIds
 
-    fun toggleCategorySelection(journalType: JournalType) {
-        _expandedJournals.value = _expandedJournals.value?.toggle(journalType) ?: throw
+    fun toggleCategorySelection(journalId: Int) {
+        _expandedJournalIds.value = _expandedJournalIds.value?.toggle(journalId) ?: throw
         RuntimeException(
             """Did not find existing set for CampaignNournalViewModel::expandedCategories.
                 | This should be initialized to an empty set and never null.""".trimMargin()
