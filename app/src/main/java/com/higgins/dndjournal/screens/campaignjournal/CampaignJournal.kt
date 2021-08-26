@@ -1,10 +1,10 @@
 package com.higgins.dndjournal.composables
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +12,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.higgins.dndjournal.screens.campaignjournal.CampaignJournalViewModel
@@ -109,7 +111,11 @@ fun CategoryList(
         Column {
             for (entry in entries) {
                 // TODO: Add real list entry instead of a garbage placeholder.
-                Text(entry)
+                Text(
+                    entry,
+                    modifier = Modifier.fillMaxWidth(1f).border(2.dp, Color.Black).height(35.dp),
+                    textAlign = TextAlign.Center,
+                )
             }
         }
     }
