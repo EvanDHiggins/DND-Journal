@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface JournalDao {
     @Insert
-    suspend fun insertAll(vararg location: Journal)
+    suspend fun insertAll(vararg journal: Journal)
 
     @Query("SELECT * FROM journal WHERE campaignId = :campaignId")
     suspend fun getJournalsForCampaignAsync(campaignId: Int): List<Journal>

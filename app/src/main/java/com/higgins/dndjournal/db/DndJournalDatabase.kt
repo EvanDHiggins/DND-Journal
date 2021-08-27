@@ -4,6 +4,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.higgins.dndjournal.db.campaign.Campaign
 import com.higgins.dndjournal.db.campaign.CampaignDao
+import com.higgins.dndjournal.db.entrybullet.EntryBullet
+import com.higgins.dndjournal.db.entrybullet.EntryBulletDao
 import com.higgins.dndjournal.db.journalentry.JournalEntry
 import com.higgins.dndjournal.db.journalentry.JournalEntryDao
 import com.higgins.dndjournal.db.journaltype.Journal
@@ -17,13 +19,15 @@ import com.higgins.dndjournal.db.tags.TagDao
         Campaign::class,
         Journal::class,
         JournalEntry::class,
-        DndTag::class
+        DndTag::class,
+        EntryBullet::class,
     ],
-    version = 8
+    version = 9
 )
 abstract class DndJournalDatabase : RoomDatabase() {
     abstract fun campaignDao(): CampaignDao
     abstract fun journalDao(): JournalDao
     abstract fun journalEntryDao(): JournalEntryDao
     abstract fun tagDao(): TagDao
+    abstract fun entryBulletDao(): EntryBulletDao
 }

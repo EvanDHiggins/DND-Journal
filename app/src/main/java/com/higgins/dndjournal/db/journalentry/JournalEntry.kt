@@ -22,10 +22,10 @@ class JournalEntry(
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "content") val content: String
 ) {
-    constructor(campaignId: Int, title: String) : this(0, campaignId, title, "")
-    constructor(campaignId: Int, title: String, content: String) : this(
+    constructor(journalId: Int, title: String) : this(0, journalId, title, "")
+    constructor(journalId: Int, title: String, content: String) : this(
         0,
-        campaignId,
+        journalId,
         title,
         content
     )

@@ -1,6 +1,8 @@
 package com.higgins.dndjournal.screens.journalentrydetail
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
@@ -31,14 +33,18 @@ fun JournalEntryDetail(
 }
 
 @Composable
-fun JournalEntryDetail(journalEntry: JournalEntry) {
-    Column {
-        JournalEntryBullet(text = "Here is some information.")
-        JournalEntryBullet(
-            text = "Here is some very very very very very very very very very very " +
-                    "very very very very very very very very very very very very very very " +
-                    "very very very very very very very very very very very very long information."
+fun JournalEntryDetail(
+    journalEntry: JournalEntry,
+    journalEntryDetailViewModel: JournalEntryDetailViewModel = hiltViewModel()
+) {
+    val entryBullets by journalEntryDetailViewModel.getBulletsForEntry(journalEntry.id)
+        .collectAsState(
+            listOf()
         )
+    LazyColumn {
+        items(entryBullets) {
+            JournalEntryBullet(text = it.content)
+        }
     }
 }
 
@@ -58,7 +64,7 @@ fun JournalEntryBullet(
                 backgroundColor = Color.Black
             ) {}
         }
-        var textField = remember { mutableStateOf(TextFieldValue("Foo")) }
+        var textField = remember { mutableStateOf(TextFieldValue(text)) }
 
         BasicTextField(
             value = textField.value,

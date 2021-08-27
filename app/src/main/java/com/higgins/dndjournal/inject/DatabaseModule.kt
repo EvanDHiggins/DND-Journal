@@ -25,4 +25,5 @@ class DatabaseModule {
     @Provides fun provideTagDao(db: DndJournalDatabase) = db.tagDao()
     @Provides fun provideJournalDao(db: DndJournalDatabase) = db.journalDao()
     @Provides fun provideJournalEntryDao(db: DndJournalDatabase) = db.journalEntryDao()
+    @Provides fun provideEntryBulletDao(db: DndJournalDatabase) = db.entryBulletDao()
 }
