@@ -10,14 +10,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import com.higgins.dndjournal.composables.CampaignJournal
 import com.higgins.dndjournal.composables.CampaignSelect
+import com.higgins.dndjournal.screens.journalentrydetail.JournalEntryDetail
 import java.lang.RuntimeException
 
 open class Route(val route: String) {
     object CampaignSelect : Route("campaign_select")
     object CampaignJournal : Route("campaign/{campaignId}") {
-
         fun forCampaignId(id: Int): String {
             return "campaign/$id"
+        }
+    }
+
+    object JournalEntryDetail : Route("journal_entry_detail/{journalEntryId}") {
+        fun forJournalEntryId(id: Int): String {
+            return "journal_entry_detail/$id"
         }
     }
 }
@@ -27,11 +33,15 @@ data class NavigationState(val navController: NavController, val homeViewModel: 
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
-fun AppNavigation(navController: NavHostController, homeViewModel: HomeViewModel = hiltViewModel()) {
+fun AppNavigation(
+    navController: NavHostController,
+    homeViewModel: HomeViewModel = hiltViewModel()
+) {
     val navState = NavigationState(navController, homeViewModel)
     NavHost(navController = navController, Route.CampaignSelect.route) {
         addCampaignSelect(navState)
         addCampaignJournal(navState)
+        addJournalEntryDetail(navState)
     }
 }
 
@@ -58,7 +68,29 @@ fun NavGraphBuilder.addCampaignJournal(navState: NavigationState) {
         navState.homeViewModel.showBackArrow()
         val campaignId = backStackEntry.arguments?.getString("campaignId")
             ?: throw RuntimeException(
-                "Expected campaignId argument to ${Route.CampaignJournal.route} navigation")
-        CampaignJournal(campaignId.toInt())
+                "Expected campaignId argument to ${Route.CampaignJournal.route} navigation"
+            )
+        CampaignJournal(campaignId = campaignId.toInt(), openJournalEntry = {
+            navState.navController.navigate(Route.JournalEntryDetail.forJournalEntryId(it))
+        })
+    }
+}
+
+@ExperimentalAnimationApi
+@ExperimentalMaterialApi
+fun NavGraphBuilder.addJournalEntryDetail(navState: NavigationState) {
+    composable(
+        Route.JournalEntryDetail.route,
+        arguments = listOf(navArgument("journalEntryId") {
+            type = NavType.StringType
+        })
+    ) { backStackEntry ->
+        navState.homeViewModel.showBackArrow()
+        val journalEntryId = backStackEntry.arguments?.getString("journalEntryId")
+            ?: throw RuntimeException(
+                "Expected campaignId argument to ${Route.JournalEntryDetail.route} navigation"
+            )
+
+        JournalEntryDetail(journalEntryId.toInt())
     }
 }

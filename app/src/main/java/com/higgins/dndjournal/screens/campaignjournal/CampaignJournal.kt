@@ -2,6 +2,7 @@ package com.higgins.dndjournal.composables
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,49 +18,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.higgins.dndjournal.db.journalentry.JournalEntry
-import com.higgins.dndjournal.db.journalentry.JournalEntryDao
 import com.higgins.dndjournal.db.journaltype.Journal
 import com.higgins.dndjournal.screens.campaignjournal.CampaignJournalViewModel
-import com.higgins.dndjournal.screens.campaignjournal.JournalType
 
-@ExperimentalMaterialApi
-@ExperimentalAnimationApi
-@Composable
-fun ExpandableJournal(
-    journal: Journal,
-    entries: List<JournalEntry>,
-    state: JournalCategoryState,
-    campaignJournalViewModel: CampaignJournalViewModel = hiltViewModel()
-) {
-    ExpandableJournalCategory(
-        journal.name,
-        onAdd = {},
-        state = state,
-        onExpandPressed = {
-            campaignJournalViewModel.toggleCategorySelection(journal.id)
-        },
-    ) {
-        Column {
-            for (entry in entries) {
-                // TODO: Add real list entry instead of a garbage placeholder.
-                Text(
-                    entry.title,
-                    modifier = Modifier
-                        .fillMaxWidth(1f)
-                        .border(2.dp, Color.Black)
-                        .height(35.dp),
-                    textAlign = TextAlign.Center,
-                )
-            }
-        }
-    }
-}
 
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun CampaignJournal(
     campaignId: Int,
+    openJournalEntry: (journalEntryId: Int) -> Unit,
     campaignJournalViewModel: CampaignJournalViewModel = hiltViewModel()
 ) {
     val journals by campaignJournalViewModel.observableJournals(campaignId).collectAsState(listOf())
@@ -79,8 +47,44 @@ fun CampaignJournal(
                 } else {
                     JournalCategoryState.COLLAPSED
                 },
+                openJournalEntry = openJournalEntry,
             )
 
+        }
+    }
+}
+
+@ExperimentalMaterialApi
+@ExperimentalAnimationApi
+@Composable
+fun ExpandableJournal(
+    journal: Journal,
+    entries: List<JournalEntry>,
+    state: JournalCategoryState,
+    openJournalEntry: (journalEntryId: Int) -> Unit,
+    campaignJournalViewModel: CampaignJournalViewModel = hiltViewModel()
+) {
+    ExpandableJournalCategory(
+        journal.name,
+        onAdd = {},
+        state = state,
+        onExpandPressed = {
+            campaignJournalViewModel.toggleCategorySelection(journal.id)
+        },
+    ) {
+        Column {
+            for (entry in entries) {
+                // TODO: Add real list entry instead of a garbage placeholder.
+                Text(
+                    entry.title,
+                    modifier = Modifier
+                        .fillMaxWidth(1f)
+                        .border(2.dp, Color.Black)
+                        .height(35.dp)
+                        .clickable { openJournalEntry(entry.id) },
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }
