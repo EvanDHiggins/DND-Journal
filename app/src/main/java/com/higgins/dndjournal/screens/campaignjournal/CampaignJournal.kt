@@ -6,14 +6,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,7 +44,8 @@ fun CampaignJournal(
             .fillMaxHeight(1f)
     ) {
         items(journals) {
-            val entries by campaignJournalViewModel.entriesForJournal(it.id).collectAsState(listOf())
+            val entries by campaignJournalViewModel.entriesForJournal(it.id)
+                .collectAsState(listOf())
             ExpandableJournal(
                 it,
                 entries = entries,
@@ -72,19 +79,37 @@ fun ExpandableJournal(
             campaignJournalViewModel.toggleCategorySelection(journal.id)
         },
     ) {
-        Column {
-            for (entry in entries) {
-                // TODO: Add real list entry instead of a garbage placeholder.
-                Text(
-                    entry.title,
-                    modifier = Modifier
-                        .fillMaxWidth(1f)
-                        .border(2.dp, Color.Black)
-                        .height(35.dp)
-                        .clickable { openJournalEntry(entry.id) },
-                    textAlign = TextAlign.Center,
-                )
+        Divider(color = Color.Black, thickness = 2.dp)
+        Column(modifier = Modifier.wrapContentSize(Alignment.Center)) {
+            for (indexedEntry in entries.withIndex()) {
+                val entry = indexedEntry.value
+                val index = indexedEntry.index
+                Box(modifier = Modifier.height(35.dp)) {
+                    ClickableText(
+                        text = AnnotatedString(entry.title),
+                        onClick = {
+                            println("CLICK!!!!!!!!!!!!!!!!!")
+                            openJournalEntry(entry.id)
+                        },
+                        style = TextStyle(
+                            color = TextStyle.Default.color,
+                            fontSize = TextStyle.Default.fontSize,
+                            textAlign = TextAlign.Center
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth(1f)
+                            .align(Alignment.Center)
+                    )
+                    if (index < entries.size - 1) {
+                        Divider(
+                            color = Color.LightGray,
+                            thickness = 1.dp,
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                        )
+                    }
+                }
             }
+
         }
     }
 }
