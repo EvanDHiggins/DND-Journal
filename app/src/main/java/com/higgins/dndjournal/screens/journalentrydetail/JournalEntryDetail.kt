@@ -2,17 +2,21 @@ package com.higgins.dndjournal.screens.journalentrydetail
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Card
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.room.util.TableInfo
 import com.higgins.dndjournal.db.journalentry.JournalEntry
+import java.lang.RuntimeException
 
 @Composable
 fun JournalEntryDetail(
@@ -31,9 +35,9 @@ fun JournalEntryDetail(journalEntry: JournalEntry) {
     Column {
         JournalEntryBullet(text = "Here is some information.")
         JournalEntryBullet(
-            text = """Here is some very very very very very very very very very very \
-            very very very very very very very very very very very very very very very very very\
-            very very very very very very very very very long information.""".trimMargin()
+            text = "Here is some very very very very very very very very very very " +
+                    "very very very very very very very very very very very very very very " +
+                    "very very very very very very very very very very very very long information."
         )
     }
 }
@@ -42,18 +46,28 @@ fun JournalEntryDetail(journalEntry: JournalEntry) {
 fun JournalEntryBullet(
     text: String,
 ) {
-    Row(
-//        modifier = Modifier.height(120.dp)
-    ) {
+    Row {
+        val fontSize = 16
+        val textStyle = TextStyle(color = Color.Black, fontSize = fontSize.sp)
         Box(
-//            modifier = Modifier.fillMaxHeight().padding(11.dp)
+            modifier = Modifier.padding((fontSize / 2).dp)
         ) {
-            Card(
+            Card( // Defines the bullet point for each journal entry.
                 shape = CircleShape,
-                modifier = Modifier.size(4.dp, 4.dp),
+                modifier = Modifier.size(8.dp, 8.dp),
                 backgroundColor = Color.Black
             ) {}
         }
-        Text(text)
+        var textField = remember { mutableStateOf(TextFieldValue("Foo")) }
+
+        BasicTextField(
+            value = textField.value,
+            onValueChange = {
+                textField.value = it
+            },
+            textStyle = textStyle,
+        ) {
+            it()
+        }
     }
 }
