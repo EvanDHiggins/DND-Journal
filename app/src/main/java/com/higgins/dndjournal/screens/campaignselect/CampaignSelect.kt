@@ -47,6 +47,7 @@ fun CampaignSelect(
         items(campaigns) {
             ListCard(it.name, onClick = {
                 onSelectCampaign(it.id)
+                campaignSelectViewModel.cancelNewCampaign()
             })
         }
     }

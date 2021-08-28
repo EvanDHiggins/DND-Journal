@@ -29,4 +29,8 @@ class CampaignSelectViewModel @Inject constructor(private val campaignDao: Campa
             _enteringNewCampaign.value = false
         }
     }
+
+    fun cancelNewCampaign() {
+        _enteringNewCampaign.value = false
+    }
 }
