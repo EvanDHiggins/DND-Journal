@@ -1,4 +1,4 @@
-package com.higgins.dndjournal.composables
+package com.higgins.dndjournal.screens.campaignjournal
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.border
@@ -22,6 +22,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.higgins.dndjournal.composables.ExpandableJournalCategory
+import com.higgins.dndjournal.composables.JournalCategoryState
 import com.higgins.dndjournal.db.journalentry.JournalEntry
 import com.higgins.dndjournal.db.journaltype.Journal
 import com.higgins.dndjournal.screens.campaignjournal.CampaignJournalViewModel

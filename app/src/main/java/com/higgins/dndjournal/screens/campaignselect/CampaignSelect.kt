@@ -1,4 +1,4 @@
-package com.higgins.dndjournal.composables
+package com.higgins.dndjournal.screens.campaignselect
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,7 +13,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.higgins.dndjournal.screens.campaignselect.CampaignSelectViewModel
+import com.higgins.dndjournal.composables.EditTextListCard
+import com.higgins.dndjournal.composables.ListCard
 import com.higgins.dndjournal.state.AppBarState
 
 

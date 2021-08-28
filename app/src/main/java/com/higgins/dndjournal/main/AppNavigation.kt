@@ -8,8 +8,8 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
-import com.higgins.dndjournal.composables.CampaignJournal
-import com.higgins.dndjournal.composables.CampaignSelect
+import com.higgins.dndjournal.screens.campaignjournal.CampaignJournal
+import com.higgins.dndjournal.screens.campaignselect.CampaignSelect
 import com.higgins.dndjournal.screens.journalentrydetail.JournalEntryDetail
 import java.lang.RuntimeException
 
