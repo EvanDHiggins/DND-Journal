@@ -1,6 +1,7 @@
 package com.higgins.dndjournal.screens.campaignjournal
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,6 +11,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -22,28 +24,49 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.higgins.dndjournal.composables.EditTextListCard
 import com.higgins.dndjournal.composables.ExpandableJournalCategory
 import com.higgins.dndjournal.composables.JournalCategoryState
+import com.higgins.dndjournal.composables.appbar.AppBarAction
+import com.higgins.dndjournal.composables.appbar.AppBarActions
 import com.higgins.dndjournal.db.journalentry.JournalEntry
 import com.higgins.dndjournal.db.journaltype.Journal
 import com.higgins.dndjournal.screens.campaignjournal.CampaignJournalViewModel
+import com.higgins.dndjournal.state.AppBarState
 
 
+@ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun CampaignJournal(
     campaignId: Int,
+    appBarState: AppBarState,
     openJournalEntry: (journalEntryId: Int) -> Unit,
     campaignJournalViewModel: CampaignJournalViewModel = hiltViewModel()
 ) {
     val journals by campaignJournalViewModel.observableJournals(campaignId).collectAsState(listOf())
     val expandedJournalIds by campaignJournalViewModel.expandedJournalIds.observeAsState(listOf())
+    val creatingNewJournal by campaignJournalViewModel.creatingNewJournal.observeAsState(false)
+
+    appBarState.setActions(
+        AppBarActions.Add {
+            campaignJournalViewModel.beginCreatingJournal(campaignId)
+        }
+    )
+
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 0.dp, vertical = 12.dp)
             .fillMaxHeight(1f)
     ) {
+        if (creatingNewJournal) {
+            item {
+                EditTextListCard(onDone = {
+                    campaignJournalViewModel.finishCreatingJournal(it)
+                })
+            }
+        }
         items(journals) {
             val entries by campaignJournalViewModel.entriesForJournal(it.id)
                 .collectAsState(listOf())
@@ -58,6 +81,12 @@ fun CampaignJournal(
                 openJournalEntry = openJournalEntry,
             )
 
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            campaignJournalViewModel.cancelCreateJournal()
         }
     }
 }

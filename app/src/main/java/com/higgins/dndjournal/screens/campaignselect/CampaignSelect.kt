@@ -35,22 +35,11 @@ fun CampaignSelect(
         .observeAsState(false)
     val selectedForDeletion by campaignSelectViewModel.selectedForDeletion.observeAsState(setOf())
 
-    if (selectedForDeletion.isEmpty()) {
-
-        println("ADDING ADD")
-        appBarState.setActions(
-            AppBarActions.Add {
-                campaignSelectViewModel.beginEnterNewCampaignState()
-            }
-        )
+    appBarState.setActions(if (selectedForDeletion.isEmpty()) {
+        AppBarActions.Add { campaignSelectViewModel.beginEnterNewCampaignState() }
     } else {
-        println("ADDING DELETE")
-        appBarState.setActions(
-            AppBarActions.Delete {
-                campaignSelectViewModel.deleteSelectedCampaigns()
-            }
-        )
-    }
+        AppBarActions.Delete { campaignSelectViewModel.deleteSelectedCampaigns() }
+    })
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 0.dp, vertical = 12.dp)

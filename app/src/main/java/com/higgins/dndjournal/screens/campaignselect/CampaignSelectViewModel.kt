@@ -20,21 +20,6 @@ class CampaignSelectViewModel @Inject constructor(private val campaignDao: Campa
     private val _enteringNewCampaign = MutableLiveData<Boolean>(false)
     val enteringNewCampaign: LiveData<Boolean> = _enteringNewCampaign
 
-    private val _selectedForDeletion = MutableLiveData<Set<Int>>(setOf())
-    val selectedForDeletion: LiveData<Set<Int>> = _selectedForDeletion
-
-    fun selectForDeletion(campaignId: Int) {
-        _selectedForDeletion.value = _selectedForDeletion.value?.toggle(campaignId)
-    }
-
-    fun deleteSelectedCampaigns() {
-        val toDelete = _selectedForDeletion.value?.toSet() ?: setOf()
-        _selectedForDeletion.value = setOf()
-        viewModelScope.launch {
-            campaignDao.deleteCampaignsWithIds(toDelete)
-        }
-    }
-
     fun beginEnterNewCampaignState() {
         _enteringNewCampaign.value = true
     }
@@ -48,5 +33,22 @@ class CampaignSelectViewModel @Inject constructor(private val campaignDao: Campa
 
     fun cancelNewCampaign() {
         _enteringNewCampaign.value = false
+    }
+
+
+
+    private val _selectedForDeletion = MutableLiveData<Set<Int>>(setOf())
+    val selectedForDeletion: LiveData<Set<Int>> = _selectedForDeletion
+
+    fun selectForDeletion(campaignId: Int) {
+        _selectedForDeletion.value = _selectedForDeletion.value?.toggle(campaignId)
+    }
+
+    fun deleteSelectedCampaigns() {
+        val toDelete = _selectedForDeletion.value?.toSet() ?: setOf()
+        _selectedForDeletion.value = setOf()
+        viewModelScope.launch {
+            campaignDao.deleteCampaignsWithIds(toDelete)
+        }
     }
 }

@@ -59,6 +59,7 @@ fun NavGraphBuilder.addCampaignSelect(navState: NavigationState) {
     }
 }
 
+@ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 fun NavGraphBuilder.addCampaignJournal(navState: NavigationState) {
@@ -75,9 +76,12 @@ fun NavGraphBuilder.addCampaignJournal(navState: NavigationState) {
             )
 
         navState.homeViewModel.appBarState().clearActions()
-        CampaignJournal(campaignId = campaignId, openJournalEntry = {
-            navState.navController.navigate(Route.JournalEntryDetail.forJournalEntryId(it))
-        })
+        CampaignJournal(
+            campaignId = campaignId,
+            appBarState = navState.homeViewModel.appBarState(),
+            openJournalEntry = {
+                navState.navController.navigate(Route.JournalEntryDetail.forJournalEntryId(it))
+            })
     }
 }
 
