@@ -8,19 +8,24 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,6 +34,7 @@ import com.higgins.dndjournal.composables.ExpandableJournalCategory
 import com.higgins.dndjournal.composables.JournalCategoryState
 import com.higgins.dndjournal.composables.appbar.AppBarAction
 import com.higgins.dndjournal.composables.appbar.AppBarActions
+import com.higgins.dndjournal.composables.appbar.TextEntryField
 import com.higgins.dndjournal.db.journalentry.JournalEntry
 import com.higgins.dndjournal.db.journaltype.Journal
 import com.higgins.dndjournal.screens.campaignjournal.CampaignJournalViewModel
@@ -101,10 +107,13 @@ fun ExpandableJournal(
     openJournalEntry: (journalEntryId: Int) -> Unit,
     campaignJournalViewModel: CampaignJournalViewModel = hiltViewModel()
 ) {
+    val creatingNewJournalEntry by campaignJournalViewModel.journalEntryCreation.active
+        .observeAsState(false)
     ExpandableJournalCategory(
         journal.name,
         onAdd = {
             campaignJournalViewModel.collapseAllExcept(journal.id)
+            campaignJournalViewModel.journalEntryCreation.begin(journal.id)
         },
         state = state,
         onExpandPressed = {
@@ -112,6 +121,11 @@ fun ExpandableJournal(
         },
     ) {
         Column(modifier = Modifier.wrapContentSize(Alignment.Center)) {
+            if (creatingNewJournalEntry) {
+                EditableJournalEntryRow(true) {
+                    campaignJournalViewModel.journalEntryCreation.finish(it)
+                }
+            }
             for (indexedEntry in entries.withIndex()) {
                 JournalEntryRow(
                     title = indexedEntry.value.title,
@@ -124,12 +138,26 @@ fun ExpandableJournal(
 }
 
 @Composable
+fun EditableJournalEntryRow(
+    shouldDrawBottomBorder: Boolean,
+    onDone: (String) -> Unit,
+) {
+    BasicJournalEntryRow(
+        shouldDrawBottomBorder = shouldDrawBottomBorder
+    ) {
+        TextEntryField(modifier = Modifier.align(Alignment.Center), onDone = onDone)
+    }
+}
+
+@Composable
 fun JournalEntryRow(
     title: String,
     shouldDrawBottomBorder: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
-    Box(modifier = Modifier.height(45.dp)) {
+    BasicJournalEntryRow(
+        shouldDrawBottomBorder = shouldDrawBottomBorder
+    ) {
         TextButton(
             onClick = onClick,
             colors = ButtonDefaults.buttonColors(
@@ -142,6 +170,17 @@ fun JournalEntryRow(
         ) {
             Text(title)
         }
+    }
+}
+
+
+@Composable
+fun BasicJournalEntryRow(
+    shouldDrawBottomBorder: Boolean,
+    content: @Composable BoxScope.() -> Unit
+) {
+    Box(modifier = Modifier.height(45.dp)) {
+        content()
         if (shouldDrawBottomBorder) {
             Divider(
                 color = Color.LightGray,

@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.higgins.dndjournal.composables.appbar.TextEntryField
 
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
@@ -58,35 +59,8 @@ fun TextListCard(
 @ExperimentalMaterialApi
 @Composable
 fun EditTextListCard(onDone: (String) -> Unit) {
-    val focusRequester = remember { FocusRequester() }
-    BaseListCard {
-        var text = remember { mutableStateOf(TextFieldValue("")) }
-        BasicTextField(
-            value = text.value, onValueChange = {
-                text.value = it
-            },
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(1f)
-                .focusRequester(focusRequester),
-            textStyle = TextStyle(
-                textAlign = TextAlign.Center
-            ),
-            singleLine = true,
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    onDone(text.value.text)
-                }
-            ), keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                autoCorrect = false,
-                imeAction = ImeAction.Done
-            )
-        )
-    }
-    DisposableEffect(Unit) {
-        focusRequester.requestFocus()
-        onDispose {}
+    BaseListCard() {
+        TextEntryField(modifier = Modifier.padding(16.dp), onDone = onDone)
     }
 }
 

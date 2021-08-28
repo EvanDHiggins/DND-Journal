@@ -1,20 +1,15 @@
 package com.higgins.dndjournal.screens.campaignjournal
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.higgins.dndjournal.db.journalentry.JournalEntry
 import com.higgins.dndjournal.db.journalentry.JournalEntryDao
 import com.higgins.dndjournal.db.journaltype.Journal
 import com.higgins.dndjournal.db.journaltype.JournalDao
-import com.higgins.dndjournal.state.ValueCreationState
 import com.higgins.dndjournal.state.ValueCreationStateWithContext
 import com.higgins.dndjournal.util.toggle
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,15 +31,17 @@ class CampaignJournalViewModel @Inject constructor(
         )
     }
 
+    fun collapseAllExcept(journalId: Int) {
+        _expandedJournalIds.value = setOf(journalId)
+    }
+
     val journalCreation =
         ValueCreationStateWithContext<String, Int>(viewModelScope) { journalName, campaignId ->
             journalDao.insertAll(Journal(campaignId, journalName))
         }
 
-    private val _addingJournalEntry = MutableLiveData<Boolean>(false)
-    val addingJournalEntry: LiveData<Boolean> = _addingJournalEntry
-
-    fun collapseAllExcept(journalId: Int) {
-        _expandedJournalIds.value = setOf(journalId)
-    }
+    val journalEntryCreation =
+        ValueCreationStateWithContext<String, Int>(viewModelScope) { entryName, journalId ->
+            journalEntryDao.insertAll(JournalEntry(journalId, entryName))
+        }
 }
