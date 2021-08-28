@@ -29,7 +29,6 @@ fun ListCard(
     title: String,
     onClick: (() -> Unit)
 ) {
-
     BaseListCard(onClick) {
         Text(
             text = title, modifier = Modifier
@@ -40,10 +39,14 @@ fun ListCard(
 
 }
 
+/**
+ * Creates a list card with an autofocused text entry field.
+ *
+ * Calls {@param onDone} with the entered value on completion.
+ */
 @ExperimentalMaterialApi
 @Composable
 fun EditTextListCard(onDone: (String) -> Unit) {
-
     val focusRequester = remember { FocusRequester() }
     BaseListCard {
         var campaignName = remember { mutableStateOf(TextFieldValue("")) }
