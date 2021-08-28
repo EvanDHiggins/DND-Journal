@@ -53,7 +53,7 @@ fun NavGraphBuilder.addCampaignSelect(navState: NavigationState) {
         navState.homeViewModel.hideBackArrow()
         CampaignSelect(onSelectCampaign = {
             navState.navController.navigate(Route.CampaignJournal.forCampaignId(it))
-        })
+        }, navState.homeViewModel.appBarState())
     }
 }
 
