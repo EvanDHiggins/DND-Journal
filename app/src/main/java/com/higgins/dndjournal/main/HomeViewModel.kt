@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.higgins.dndjournal.composables.appbar.AppBarAction
 import com.higgins.dndjournal.state.AppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-
 
 
 @HiltViewModel
@@ -24,13 +24,11 @@ class HomeViewModel @Inject constructor() : ViewModel() {
         _displayBackArrow.value = false
     }
 
+    private val _appBarActions = MutableLiveData<List<AppBarAction>>(listOf())
+    val appBarActions: LiveData<List<AppBarAction>> = _appBarActions
+
     fun appBarState(): AppBarState {
-        return AppBarState(_appBarAddAction)
+        return AppBarState(_appBarActions)
     }
-
-    private val _appBarAddAction = MutableLiveData<(() -> Unit)?>(null)
-    val appBarAddAction: LiveData<(() -> Unit)?> = _appBarAddAction
-
-
 
 }

@@ -14,7 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.higgins.dndjournal.composables.EditTextListCard
-import com.higgins.dndjournal.composables.ListCard
+import com.higgins.dndjournal.composables.TextListCard
+import com.higgins.dndjournal.composables.appbar.AppBarActions
 import com.higgins.dndjournal.state.AppBarState
 
 
@@ -26,9 +27,9 @@ fun CampaignSelect(
     appBarState: AppBarState,
     campaignSelectViewModel: CampaignSelectViewModel = hiltViewModel()
 ) {
-    appBarState.setAppBarAddAction {
+    appBarState.setActions(AppBarActions.Add {
         campaignSelectViewModel.beginEnterNewCampaignState()
-    }
+    })
     val campaigns by campaignSelectViewModel.observableCampaigns.observeAsState(listOf())
     val enteringNewCampaign by campaignSelectViewModel.enteringNewCampaign
         .observeAsState(false)
@@ -45,7 +46,7 @@ fun CampaignSelect(
             }
         }
         items(campaigns) {
-            ListCard(it.name, onClick = {
+            TextListCard(it.name, onClick = {
                 onSelectCampaign(it.id)
             })
         }

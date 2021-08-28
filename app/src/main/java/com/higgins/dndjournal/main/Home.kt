@@ -27,29 +27,29 @@ fun Home(viewModel: HomeViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun HomeTopAppBar(showBackArrow: Boolean, navController: NavController) {
+fun HomeTopAppBar(
+    showBackArrow: Boolean,
+    navController: NavController,
+    homeViewModel: HomeViewModel = hiltViewModel()
+) {
     TopAppBar(
         title = {
             Text("DnD Journal")
         },
         navigationIcon = getNavIconComposable(showBackArrow, navController),
         actions = {
-            AppBarActions()
+            val actions by homeViewModel.appBarActions.observeAsState(listOf())
+            for (action in actions) {
+                action.Icon()
+            }
         }
     )
 }
 
-@Composable
-fun AppBarActions(homeViewModel: HomeViewModel = hiltViewModel()) {
-    val addAction by homeViewModel.appBarAddAction.observeAsState(null)
-    if (addAction != null) {
-        IconButton(onClick = addAction!!) {
-            Icon(painter = painterResource(R.drawable.ic_add_symbol), "New")
-        }
-    }
-}
-
-fun getNavIconComposable(hasBackStackEntry: Boolean, navController: NavController): (@Composable () -> Unit)? {
+fun getNavIconComposable(
+    hasBackStackEntry: Boolean,
+    navController: NavController
+): (@Composable () -> Unit)? {
     if (!hasBackStackEntry) {
         return null
     }

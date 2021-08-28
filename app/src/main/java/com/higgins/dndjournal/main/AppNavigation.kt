@@ -49,7 +49,6 @@ fun AppNavigation(
 @ExperimentalMaterialApi
 fun NavGraphBuilder.addCampaignSelect(navState: NavigationState) {
     composable(Route.CampaignSelect.route) {
-        navState.homeViewModel.appBarState().setAppBarAddAction { println("\n\n\n\n\nIT WORKED\n\n\n\n\n") }
         navState.homeViewModel.hideBackArrow()
         CampaignSelect(onSelectCampaign = {
             navState.navController.navigate(Route.CampaignJournal.forCampaignId(it))
