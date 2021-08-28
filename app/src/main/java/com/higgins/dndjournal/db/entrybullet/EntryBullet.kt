@@ -18,7 +18,7 @@ import com.higgins.dndjournal.db.journalentry.JournalEntry
 )
 data class EntryBullet(
     @PrimaryKey(autoGenerate = true) val id: Int,
-    @ColumnInfo(name = "journalEntryId") val campaignId: Int,
+    @ColumnInfo(name = "journalEntryId") val journalEntryId: Int,
     @ColumnInfo(name = "content") val content: String
 ) {
     constructor(journalEntryId: Int, content: String) : this(0, journalEntryId, content)

@@ -13,4 +13,6 @@ interface EntryBulletDao {
     @Query("SELECT * FROM entrybullet WHERE journalEntryId = :journalEntryId")
     fun getBulletsForJournalEntry(journalEntryId: Int): Flow<List<EntryBullet>>
 
+    @Query("UPDATE entryBullet SET content = :content WHERE id = :entryBulletId")
+    suspend fun updateContent(entryBulletId: Int, content: String)
 }
