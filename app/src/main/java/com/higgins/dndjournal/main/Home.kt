@@ -3,6 +3,7 @@ package com.higgins.dndjournal
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -30,10 +31,23 @@ fun HomeTopAppBar(showBackArrow: Boolean, navController: NavController) {
     TopAppBar(
         title = {
             Text("DnD Journal")
-        }, navigationIcon = getNavIconComposable(showBackArrow, navController)
+        },
+        navigationIcon = getNavIconComposable(showBackArrow, navController),
+        actions = {
+            AppBarActions()
+        }
     )
 }
 
+@Composable
+fun AppBarActions(homeViewModel: HomeViewModel = hiltViewModel()) {
+    val addAction by homeViewModel.appBarAddAction.observeAsState(null)
+    if (addAction != null) {
+        IconButton(onClick = addAction!!) {
+            Icon(painter = painterResource(R.drawable.ic_add_symbol), "New")
+        }
+    }
+}
 
 fun getNavIconComposable(hasBackStackEntry: Boolean, navController: NavController): (@Composable () -> Unit)? {
     if (!hasBackStackEntry) {
