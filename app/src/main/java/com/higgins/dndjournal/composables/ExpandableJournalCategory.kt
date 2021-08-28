@@ -44,6 +44,27 @@ fun ExpandableJournalCategory(
         if (state.isExpanded()) 180f else 0f
     }
 
+    JournalCard(
+        title = title,
+        state = state,
+        arrowRotationDegrees = arrowRotationDegrees,
+        onExpandPressed = onExpandPressed,
+        onAdd = onAdd
+    ) {
+        content?.invoke(this)
+    }
+}
+
+@ExperimentalAnimationApi
+@Composable
+fun JournalCard(
+    title: String,
+    state: JournalCategoryState,
+    arrowRotationDegrees: Float,
+    onExpandPressed: () -> Unit,
+    onAdd: () -> Unit,
+    content: @Composable() (AnimatedVisibilityScope.() -> Unit)?
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth(1f)
@@ -58,10 +79,7 @@ fun ExpandableJournalCategory(
                 modifier = Modifier.fillMaxWidth(1f)
             ) {
                 CardArrow(degrees = arrowRotationDegrees, onClick = onExpandPressed)
-                Text(
-                    text = title, modifier = Modifier
-                        .padding(16.dp), textAlign = TextAlign.Center
-                )
+                Text(title, Modifier.padding(16.dp), textAlign = TextAlign.Center)
                 Box {
                     NewEntryButton(title, onAdd)
                 }

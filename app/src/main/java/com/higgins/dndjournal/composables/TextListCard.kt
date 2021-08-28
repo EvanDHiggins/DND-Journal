@@ -60,10 +60,10 @@ fun TextListCard(
 fun EditTextListCard(onDone: (String) -> Unit) {
     val focusRequester = remember { FocusRequester() }
     BaseListCard {
-        var campaignName = remember { mutableStateOf(TextFieldValue("")) }
+        var text = remember { mutableStateOf(TextFieldValue("")) }
         BasicTextField(
-            value = campaignName.value, onValueChange = {
-                campaignName.value = it
+            value = text.value, onValueChange = {
+                text.value = it
             },
             modifier = Modifier
                 .padding(16.dp)
@@ -75,7 +75,7 @@ fun EditTextListCard(onDone: (String) -> Unit) {
             singleLine = true,
             keyboardActions = KeyboardActions(
                 onDone = {
-                    onDone(campaignName.value.text)
+                    onDone(text.value.text)
                 }
             ), keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,

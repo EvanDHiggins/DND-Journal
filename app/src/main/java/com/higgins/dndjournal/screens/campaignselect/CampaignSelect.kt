@@ -31,12 +31,12 @@ fun CampaignSelect(
 ) {
 
     val campaigns by campaignSelectViewModel.observableCampaigns.observeAsState(listOf())
-    val enteringNewCampaign by campaignSelectViewModel.enteringNewCampaign
+    val enteringNewCampaign by campaignSelectViewModel.campaignCreationState.active
         .observeAsState(false)
     val selectedForDeletion by campaignSelectViewModel.selectedForDeletion.observeAsState(setOf())
 
     appBarState.setActions(if (selectedForDeletion.isEmpty()) {
-        AppBarActions.Add { campaignSelectViewModel.beginEnterNewCampaignState() }
+        AppBarActions.Add { campaignSelectViewModel.campaignCreationState.begin() }
     } else {
         AppBarActions.Delete { campaignSelectViewModel.deleteSelectedCampaigns() }
     })
@@ -48,7 +48,7 @@ fun CampaignSelect(
         if (enteringNewCampaign) {
             item {
                 EditTextListCard(onDone = {
-                    campaignSelectViewModel.finishEnteringNewCampaign(it)
+                    campaignSelectViewModel.campaignCreationState.finish(it)
                 })
             }
         }
@@ -70,7 +70,7 @@ fun CampaignSelect(
 
     DisposableEffect(Unit) {
         onDispose {
-            campaignSelectViewModel.cancelNewCampaign()
+            campaignSelectViewModel.campaignCreationState.cancel()
         }
     }
 }

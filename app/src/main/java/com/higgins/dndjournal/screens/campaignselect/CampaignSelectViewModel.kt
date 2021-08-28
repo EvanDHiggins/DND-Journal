@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.higgins.dndjournal.db.campaign.Campaign
 import com.higgins.dndjournal.db.campaign.CampaignDao
+import com.higgins.dndjournal.state.ValueCreationState
 import com.higgins.dndjournal.util.toggle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,25 +18,10 @@ class CampaignSelectViewModel @Inject constructor(private val campaignDao: Campa
     ViewModel() {
     val observableCampaigns = campaignDao.getAll()
 
-    private val _enteringNewCampaign = MutableLiveData<Boolean>(false)
-    val enteringNewCampaign: LiveData<Boolean> = _enteringNewCampaign
 
-    fun beginEnterNewCampaignState() {
-        _enteringNewCampaign.value = true
+    val campaignCreationState = ValueCreationState<String>(viewModelScope) {
+        campaignDao.insertAll(Campaign(it))
     }
-
-    fun finishEnteringNewCampaign(campaign: String) {
-        viewModelScope.launch {
-            campaignDao.insertAll(Campaign(campaign))
-            _enteringNewCampaign.value = false
-        }
-    }
-
-    fun cancelNewCampaign() {
-        _enteringNewCampaign.value = false
-    }
-
-
 
     private val _selectedForDeletion = MutableLiveData<Set<Int>>(setOf())
     val selectedForDeletion: LiveData<Set<Int>> = _selectedForDeletion

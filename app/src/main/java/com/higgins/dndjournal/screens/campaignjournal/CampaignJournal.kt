@@ -47,11 +47,11 @@ fun CampaignJournal(
 ) {
     val journals by campaignJournalViewModel.observableJournals(campaignId).collectAsState(listOf())
     val expandedJournalIds by campaignJournalViewModel.expandedJournalIds.observeAsState(listOf())
-    val creatingNewJournal by campaignJournalViewModel.creatingNewJournal.observeAsState(false)
+    val creatingNewJournal by campaignJournalViewModel.journalCreation.active.observeAsState(false)
 
     appBarState.setActions(
         AppBarActions.Add {
-            campaignJournalViewModel.beginCreatingJournal(campaignId)
+            campaignJournalViewModel.journalCreation.begin(campaignId)
         }
     )
 
@@ -63,17 +63,17 @@ fun CampaignJournal(
         if (creatingNewJournal) {
             item {
                 EditTextListCard(onDone = {
-                    campaignJournalViewModel.finishCreatingJournal(it)
+                    campaignJournalViewModel.journalCreation.finish(it)
                 })
             }
         }
-        items(journals) {
-            val entries by campaignJournalViewModel.entriesForJournal(it.id)
+        items(journals) { journal ->
+            val entries by campaignJournalViewModel.entriesForJournal(journal.id)
                 .collectAsState(listOf())
             ExpandableJournal(
-                it,
+                journal,
                 entries = entries,
-                state = if (it.id in expandedJournalIds) {
+                state = if (journal.id in expandedJournalIds) {
                     JournalCategoryState.EXPANDED
                 } else {
                     JournalCategoryState.COLLAPSED
@@ -86,7 +86,7 @@ fun CampaignJournal(
 
     DisposableEffect(Unit) {
         onDispose {
-            campaignJournalViewModel.cancelCreateJournal()
+            campaignJournalViewModel.journalCreation.cancel()
         }
     }
 }
@@ -103,7 +103,9 @@ fun ExpandableJournal(
 ) {
     ExpandableJournalCategory(
         journal.name,
-        onAdd = {},
+        onAdd = {
+            campaignJournalViewModel.collapseAllExcept(journal.id)
+        },
         state = state,
         onExpandPressed = {
             campaignJournalViewModel.toggleCategorySelection(journal.id)
