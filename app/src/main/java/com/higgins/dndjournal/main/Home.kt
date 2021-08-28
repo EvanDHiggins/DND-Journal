@@ -1,6 +1,7 @@
 package com.higgins.dndjournal
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -13,6 +14,7 @@ import com.higgins.dndjournal.ui.theme.DNDNotesTheme
 
 import com.higgins.dndjournal.main.HomeViewModel
 
+@ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable

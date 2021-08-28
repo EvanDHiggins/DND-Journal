@@ -1,6 +1,7 @@
 package com.higgins.dndjournal.screens.campaignselect
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +20,7 @@ import com.higgins.dndjournal.composables.appbar.AppBarActions
 import com.higgins.dndjournal.state.AppBarState
 
 
+@ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
@@ -27,12 +29,28 @@ fun CampaignSelect(
     appBarState: AppBarState,
     campaignSelectViewModel: CampaignSelectViewModel = hiltViewModel()
 ) {
-    appBarState.setActions(AppBarActions.Add {
-        campaignSelectViewModel.beginEnterNewCampaignState()
-    })
+
     val campaigns by campaignSelectViewModel.observableCampaigns.observeAsState(listOf())
     val enteringNewCampaign by campaignSelectViewModel.enteringNewCampaign
         .observeAsState(false)
+    val selectedForDeletion by campaignSelectViewModel.selectedForDeletion.observeAsState(setOf())
+
+    if (selectedForDeletion.isEmpty()) {
+
+        println("ADDING ADD")
+        appBarState.setActions(
+            AppBarActions.Add {
+                campaignSelectViewModel.beginEnterNewCampaignState()
+            }
+        )
+    } else {
+        println("ADDING DELETE")
+        appBarState.setActions(
+            AppBarActions.Delete {
+                campaignSelectViewModel.deleteSelectedCampaigns()
+            }
+        )
+    }
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 0.dp, vertical = 12.dp)
@@ -45,10 +63,19 @@ fun CampaignSelect(
                 })
             }
         }
-        items(campaigns) {
-            TextListCard(it.name, onClick = {
-                onSelectCampaign(it.id)
-            })
+        items(campaigns) { campaign ->
+            val clickActions =
+                CampaignClickActions(selectedForDeletion.isNotEmpty(), onSelectCampaign = {
+                    onSelectCampaign(campaign.id)
+                }, toggleCampaignDeletion = {
+                    campaignSelectViewModel.selectForDeletion(campaign.id)
+                })
+            TextListCard(
+                campaign.name,
+                highlighted = selectedForDeletion.contains(campaign.id),
+                onClick = clickActions.onClick,
+                onLongClick = clickActions.onLongClick
+            )
         }
     }
 
@@ -57,4 +84,17 @@ fun CampaignSelect(
             campaignSelectViewModel.cancelNewCampaign()
         }
     }
+}
+
+class CampaignClickActions(
+    deletionOngoing: Boolean,
+    onSelectCampaign: () -> Unit,
+    toggleCampaignDeletion: () -> Unit
+) {
+    val onClick: () -> Unit = if (deletionOngoing) {
+        toggleCampaignDeletion
+    } else {
+        onSelectCampaign
+    }
+    val onLongClick: () -> Unit = toggleCampaignDeletion
 }

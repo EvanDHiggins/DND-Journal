@@ -2,6 +2,7 @@ package com.higgins.dndjournal.db.campaign
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
@@ -22,4 +23,7 @@ interface CampaignDao {
 
     @Query("DELETE FROM campaign")
     suspend fun deleteAll()
+
+    @Query("DELETE FROM campaign WHERE id in (:campaignIds)")
+    suspend fun deleteCampaignsWithIds(campaignIds: Set<Int>)
 }
