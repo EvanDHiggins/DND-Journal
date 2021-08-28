@@ -17,7 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.higgins.dndjournal.screens.campaignselect.CampaignSelectViewModel
 import com.higgins.dndjournal.state.AppBarState
 
-// TODO: Add the ability to create new campaigns with the FAB.
+
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
