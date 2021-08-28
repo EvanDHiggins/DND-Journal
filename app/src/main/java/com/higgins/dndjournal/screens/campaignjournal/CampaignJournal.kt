@@ -96,7 +96,7 @@ fun JournalEntryRow(
     shouldDrawBottomBorder: Boolean,
     onClick: () -> Unit
 ) {
-    Box(modifier = Modifier.height(35.dp)) {
+    Box(modifier = Modifier.height(45.dp)) {
         TextButton(
             onClick = onClick,
             colors = ButtonDefaults.buttonColors(

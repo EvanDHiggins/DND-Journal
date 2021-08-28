@@ -53,7 +53,7 @@ fun JournalEntryBullet(
     text: String,
 ) {
     Row {
-        val fontSize = 16
+        val fontSize = 20
         val textStyle = TextStyle(color = Color.Black, fontSize = fontSize.sp)
         Box(
             modifier = Modifier.padding((fontSize / 2).dp)
@@ -72,6 +72,7 @@ fun JournalEntryBullet(
                 textField.value = it
             },
             textStyle = textStyle,
+            modifier = Modifier.fillMaxWidth(1f)
         ) {
             it()
         }
