@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -47,8 +48,14 @@ fun CampaignSelect(
         items(campaigns) {
             ListCard(it.name, onClick = {
                 onSelectCampaign(it.id)
-                campaignSelectViewModel.cancelNewCampaign()
+                //campaignSelectViewModel.cancelNewCampaign()
             })
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            campaignSelectViewModel.cancelNewCampaign()
         }
     }
 }
