@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun TextEntryField(modifier: Modifier = Modifier, onDone: (String) -> Unit) {
-    var text = remember { mutableStateOf(TextFieldValue("")) }
+    val text = remember { mutableStateOf(TextFieldValue("")) }
     val focusRequester = remember { FocusRequester() }
     BasicTextField(
         value = text.value,
