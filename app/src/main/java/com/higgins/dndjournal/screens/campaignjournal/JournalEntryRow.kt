@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.higgins.dndjournal.composables.appbar.TextEntryField
 
@@ -44,7 +45,7 @@ fun JournalEntryRow(
                 .fillMaxWidth(1f)
                 .align(Alignment.Center)
         ) {
-            Text(title)
+            Text(title, fontWeight = FontWeight.Normal)
         }
     }
 }

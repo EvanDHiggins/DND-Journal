@@ -104,6 +104,7 @@ fun ExpandableJournal(
             campaignJournalViewModel.journalEntryCreation.begin(journal.id)
         },
         onExpandPressed = {
+            campaignJournalViewModel.journalEntryCreation.cancel()
             campaignJournalViewModel.toggleCategorySelection(journal.id)
         },
     ) {
