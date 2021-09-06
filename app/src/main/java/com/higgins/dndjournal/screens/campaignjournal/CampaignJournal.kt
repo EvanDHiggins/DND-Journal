@@ -97,11 +97,12 @@ fun ExpandableJournal(
         .observeAsState(false)
     ExpandableJournalCategory(
         journal.name,
+        state = state,
+        hasEntries = entries.isNotEmpty(),
         onAdd = {
             campaignJournalViewModel.collapseAllExcept(journal.id)
             campaignJournalViewModel.journalEntryCreation.begin(journal.id)
         },
-        state = state,
         onExpandPressed = {
             campaignJournalViewModel.toggleCategorySelection(journal.id)
         },

@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,8 +33,9 @@ enum class JournalCategoryState {
 @Composable
 fun ExpandableJournalCategory(
     title: String,
-    onAdd: (() -> Unit),
     state: JournalCategoryState = JournalCategoryState.COLLAPSED,
+    hasEntries: Boolean,
+    onAdd: (() -> Unit),
     onExpandPressed: () -> Unit = {},
     content: @Composable (AnimatedVisibilityScope.() -> Unit)? = null,
 ) {
@@ -47,6 +49,7 @@ fun ExpandableJournalCategory(
     JournalCard(
         title = title,
         state = state,
+        hasEntries = hasEntries,
         arrowRotationDegrees = arrowRotationDegrees,
         onExpandPressed = onExpandPressed,
         onAdd = onAdd
@@ -60,6 +63,7 @@ fun ExpandableJournalCategory(
 fun JournalCard(
     title: String,
     state: JournalCategoryState,
+    hasEntries: Boolean,
     arrowRotationDegrees: Float,
     onExpandPressed: () -> Unit,
     onAdd: () -> Unit,
@@ -78,7 +82,11 @@ fun JournalCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth(1f)
             ) {
-                CardArrow(degrees = arrowRotationDegrees, onClick = onExpandPressed)
+                CardArrow(
+                    degrees = arrowRotationDegrees,
+                    enabled = hasEntries,
+                    onClick = onExpandPressed
+                )
                 Text(title, Modifier.padding(16.dp), textAlign = TextAlign.Center)
                 Box {
                     NewEntryButton(title, onAdd)
@@ -123,10 +131,12 @@ fun NewEntryButton(title: String, onClick: () -> Unit) {
 @Composable
 fun CardArrow(
     degrees: Float,
+    enabled: Boolean,
     onClick: () -> Unit
 ) {
     IconButton(
         onClick = onClick,
+        enabled = enabled,
         content = {
             Icon(
                 painter = painterResource(R.drawable.ic_expand_more),
