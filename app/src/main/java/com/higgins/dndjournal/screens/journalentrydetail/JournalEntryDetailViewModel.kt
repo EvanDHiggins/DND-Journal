@@ -30,6 +30,12 @@ class JournalEntryDetailViewModel @Inject constructor(
         }
     }
 
+    fun deleteEntry(entryBulletId: Int) {
+        viewModelScope.launch {
+            entryBulletDao.deleteById(entryBulletId)
+        }
+    }
+
     fun persistBulletContent(entryBulletId: Int, content: String) {
         viewModelScope.launch {
             entryBulletDao.updateContent(entryBulletId, content)

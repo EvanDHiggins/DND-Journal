@@ -15,4 +15,7 @@ interface EntryBulletDao {
 
     @Query("UPDATE entryBullet SET content = :content WHERE id = :entryBulletId")
     suspend fun updateContent(entryBulletId: Int, content: String)
+
+    @Query("DELETE FROM entryBullet WHERE id = :entryBulletId")
+    suspend fun deleteById(entryBulletId: Int)
 }
